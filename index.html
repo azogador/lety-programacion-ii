@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Lety - Programación II - Acompañamiento con IA</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+    }
+
+    .app {
+      max-width: 760px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+    }
+
+    header {
+      padding: 12px 0 16px;
+      border-bottom: 1px solid #334155;
+      margin-bottom: 12px;
+    }
+
+    .titulo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #38bdf8;
+      margin: 0;
+    }
+
+    .subtitulo {
+      margin: 6px 0 0;
+      font-size: 14px;
+      color: #cbd5e1;
+    }
+
+    .estado {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+      font-size: 14px;
+      color: #bae6fd;
+    }
+
+    .chat {
+      flex: 1;
+      background: #020617;
+      border: 1px solid #334155;
+      border-radius: 14px;
+      padding: 12px;
+      overflow-y: auto;
+      min-height: 420px;
+      max-height: 62vh;
+    }
+
+    .mensaje {
+      padding: 11px 13px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      font-size: 15px;
+    }
+
+    .sistema {
+      background: #1e293b;
+      color: #dbeafe;
+      border-left: 4px solid #38bdf8;
+    }
+
+    .ia {
+      background: #312e81;
+      color: #e0e7ff;
+      border-left: 4px solid #818cf8;
+    }
+
+    .estudiante {
+      background: #14532d;
+      color: #dcfce7;
+      margin-left: 24px;
+      border-right: 4px solid #22c55e;
+    }
+
+    .bloque-entrada {
+      margin-top: 12px;
+      background: #111827;
+      border: 1px solid #334155;
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 92px;
+      resize: vertical;
+      border-radius: 12px;
+      border: 1px solid #475569;
+      padding: 12px;
+      font-size: 16px;
+      background: #020617;
+      color: #e5e7eb;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: #38bdf8;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-enviar {
+      background: #38bdf8;
+      color: #020617;
+    }
+
+    .btn-recibido {
+      background: #22c55e;
+      color: #052e16;
+    }
+
+    .btn-deshabilitado {
+      background: #64748b;
+      color: #e5e7eb;
+      cursor: wait;
+    }
+
+    .nota {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
+    .panel-docente {
+      margin-top: 12px;
+      padding: 12px;
+      border: 1px dashed #facc15;
+      border-radius: 14px;
+      background: #1f2937;
+    }
+
+    .panel-docente h3 {
+      margin: 0 0 8px;
+      color: #facc15;
+      font-size: 16px;
+    }
+
+    .panel-docente p {
+      font-size: 13px;
+      color: #d1d5db;
+      line-height: 1.4;
+      margin: 0 0 10px;
+    }
+
+    .btn-docente {
+      background: #facc15;
+      color: #422006;
+    }
+
+    .btn-aprobado {
+      background: #22c55e;
+      color: #052e16;
+    }
+
+    footer {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 12px;
+      padding: 14px 0 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <header>
+      <h1 class="titulo">Acompañamiento con IA</h1>
+      <p class="subtitulo">Lety · Programación II · INET 2026</p>
+    </header>
+
+    <section class="estado" id="estado">
+      Estado del recorrido: Lety puede comenzar a escribir.
+    </section>
+
+    <section class="chat" id="chat">
+      <div class="mensaje sistema">
+Bienvenida, Lety.
+
+Este es un espacio de acompañamiento con IA para Programación II.
+
+La idea no es que la IA haga la actividad por vos, sino que te acompañe paso a paso: puede hacerte preguntas, ayudarte a ordenar una respuesta, pedirte que expliques lo que pensaste y ayudarte a revisar.
+      </div>
+
+      <div class="mensaje sistema">
+Importante:
+
+Este recorrido no avanza automáticamente. 
+Federico, como docente, puede revisar tu pantalla, hacer preguntas y decidir si el recorrido continúa.
+      </div>
+
+      <div class="mensaje ia">
+Primera pregunta:
+
+Con tus palabras, ¿qué entendés por esta idea?
+
+“Estudiante = pantalla + IA + web + presencia docente”
+      </div>
+    </section>
+
+    <section class="bloque-entrada">
+      <textarea id="entrada" placeholder="Lety escribe acá su respuesta..."></textarea>
+
+      <button id="btnEnviar" class="btn-enviar" onclick="enviarMensaje()">
+        Enviar mensaje
+      </button>
+
+      <button class="btn-recibido" onclick="acusarRecibo()">
+        Acusar recibo
+      </button>
+
+      <p class="nota">
+        Si no sabés qué responder, podés escribir: “No entiendo todavía” o “Necesito una pista”.
+      </p>
+    </section>
+
+    <section class="panel-docente">
+      <h3>Panel docente</h3>
+      <p>
+        Este botón representa la verificación presencial. El docente debe mirar la pantalla del estudiante antes de habilitar la continuidad del recorrido.
+      </p>
+
+      <button id="btnDocente" class="btn-docente" onclick="aprobarDocente()">
+        Pendiente de verificación docente
+      </button>
+    </section>
+
+    <footer>
+      Convocatoria inicial · Estudiantes del INET · Programación II
+    </footer>
+  </main>
+
+  <script>
+    const chat = document.getElementById("chat");
+    const entrada = document.getElementById("entrada");
+    const estado = document.getElementById("estado");
+    const btnEnviar = document.getElementById("btnEnviar");
+    const btnDocente = document.getElementById("btnDocente");
+
+    function agregarMensaje(texto, tipo) {
+      const div = document.createElement("div");
+      div.className = "mensaje " + tipo;
+      div.textContent = texto;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function setEstado(texto) {
+      estado.textContent = "Estado del recorrido: " + texto;
+    }
+
+    async function enviarMensaje() {
+      const texto = entrada.value.trim();
+
+      if (texto === "") {
+        alert("Escribí algo antes de enviar.");
+        return;
+      }
+
+      agregarMensaje(texto, "estudiante");
+      entrada.value = "";
+
+      btnEnviar.disabled = true;
+      btnEnviar.textContent = "Esperando respuesta de la IA...";
+      btnEnviar.className = "btn-deshabilitado";
+
+      setEstado("Lety envió un mensaje. La IA está respondiendo.");
+
+      try {
+        const respuesta = await fetch("/.netlify/functions/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            mensaje: texto
+          })
+        });
+
+        const datos = await respuesta.json();
+
+        if (!respuesta.ok) {
+          throw new Error(datos.error || "Error desconocido.");
+        }
+
+        agregarMensaje(datos.respuesta, "ia");
+        setEstado("La IA respondió. El recorrido queda pendiente de lectura y posible verificación docente.");
+
+      } catch (error) {
+        agregarMensaje(
+          "No se pudo conectar con la IA. Revisar la función de Netlify o la variable OPENAI_API_KEY.",
+          "sistema"
+        );
+        console.error(error);
+        setEstado("hubo un error de conexión con la IA.");
+      }
+
+      btnEnviar.disabled = false;
+      btnEnviar.textContent = "Enviar mensaje";
+      btnEnviar.className = "btn-enviar";
+    }
+
+    function acusarRecibo() {
+      const ahora = new Date().toLocaleString("es-UY");
+
+      agregarMensaje(
+        "Acuso recibo. Última marca registrada: " + ahora,
+        "estudiante"
+      );
+
+      setEstado("Lety acusó recibo. Última marca registrada: " + ahora + ".");
+    }
+
+    function aprobarDocente() {
+      const ahora = new Date().toLocaleString("es-UY");
+
+      btnDocente.textContent = "Actividad verificada por docente";
+      btnDocente.className = "btn-aprobado";
+
+      agregarMensaje(
+        "El docente verificó presencialmente la pantalla del estudiante. Marca docente registrada: " + ahora,
+        "sistema"
+      );
+
+      agregarMensaje(
+        "Podemos continuar con el recorrido. Antes de avanzar, explicá en una frase qué parte de la idea te quedó más clara.",
+        "ia"
+      );
+
+      setEstado("actividad verificada presencialmente por el docente.");
+    }
+  </script>
+</body>
+</html>
