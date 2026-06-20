@@ -9,6 +9,17 @@ exports.handler = async function(event) {
       };
     }
 
+    const apiKey = process.env.OPENAI_API_KEY;
+
+    if (!apiKey) {
+      return {
+        statusCode: 500,
+        body: JSON.stringify({
+          error: "No se encontró la variable OPENAI_API_KEY en Netlify."
+        })
+      };
+    }
+
     const body = JSON.parse(event.body || "{}");
     const mensaje = body.mensaje || "";
 
@@ -50,14 +61,14 @@ La IA acompaña.
 El docente observa, pregunta, verifica la pantalla del estudiante y decide si continúa el recorrido.
 `;
 
-    const respuesta = await fetch("https://api.openai.com/v1/responses", {
+    const respuestaOpenAI = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer " + process.env.OPENAI_API_KEY
+        "Authorization": "Bearer " + apiKey
       },
       body: JSON.stringify({
-        model: process.env.OPENAI_MODEL || "gpt-4.1-mini",
+        model: process.env.OPENAI_MODEL || "gpt-4o-mini",
         input: [
           {
             role: "system",
@@ -71,20 +82,21 @@ El docente observa, pregunta, verifica la pantalla del estudiante y decide si co
       })
     });
 
-    const data = await respuesta.json();
+    const data = await respuestaOpenAI.json();
 
-    if (!respuesta.ok) {
+    if (!respuestaOpenAI.ok) {
       return {
-        statusCode: respuesta.status,
+        statusCode: respuestaOpenAI.status,
         body: JSON.stringify({
-          error: data.error?.message || "Error al llamar a la API."
+          error: "OpenAI devolvió un error.",
+          detalle: data.error?.message || JSON.stringify(data)
         })
       };
     }
 
     const texto =
-      data.output?.[0]?.content?.[0]?.text ||
       data.output_text ||
+      data.output?.[0]?.content?.[0]?.text ||
       "No pude generar una respuesta en este momento.";
 
     return {
