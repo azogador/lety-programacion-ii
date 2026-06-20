@@ -95,6 +95,12 @@
       border-right: 4px solid #22c55e;
     }
 
+    .error {
+      background: #7f1d1d;
+      color: #fee2e2;
+      border-left: 4px solid #ef4444;
+    }
+
     .bloque-entrada {
       margin-top: 12px;
       background: #111827;
@@ -312,7 +318,12 @@ Con tus palabras, ¿qué entendés por esta idea?
         const datos = await respuesta.json();
 
         if (!respuesta.ok) {
-          throw new Error(datos.error || "Error desconocido.");
+          const mensajeError = datos.detalle || datos.error || "Error desconocido en la función.";
+          throw new Error(mensajeError);
+        }
+
+        if (!datos.respuesta) {
+          throw new Error("La función respondió, pero no devolvió texto de IA.");
         }
 
         agregarMensaje(datos.respuesta, "ia");
@@ -320,9 +331,10 @@ Con tus palabras, ¿qué entendés por esta idea?
 
       } catch (error) {
         agregarMensaje(
-          "No se pudo conectar con la IA. Revisar la función de Netlify o la variable OPENAI_API_KEY.",
-          "sistema"
+          "Error real de conexión con la IA:\n" + error.message,
+          "error"
         );
+
         console.error(error);
         setEstado("hubo un error de conexión con la IA.");
       }
